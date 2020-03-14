@@ -67,6 +67,38 @@ siteinfo <- siteinfo %>%
 ```
 
 
+## Get additional meta info from Falge et al.
+
+(only elevation data here)
+
+The file "fluxnet_site_info_all.csv" was downloaded from downloaded from https://daac.ornl.gov/cgi-bin/dsviewer.pl?ds_id=1530.
+
+```{r}
+## Get additional meta information for sites: Koeppen-Geiger Class
+## The file "siteinfo_climate_koeppengeiger_flunxet2015.csv" was downloaded from downloaded from https://daac.ornl.gov/cgi-bin/dsviewer.pl?ds_id=1530 (placed in my ~/data/FLUXNET-2015_Tier1/meta/)
+siteinfo <- read_csv("./data/fluxnet_site_info_all.csv") %>%
+  dplyr::select(-sitename) %>% 
+  dplyr::rename( sitename = fluxnetid ) %>% 
+  mutate(lat_falge = latitude, lon_falge = longitude) %>% 
+  dplyr::select(sitename, lon_falge, lat_falge, gtopo30_elevation, igbp_land_use, plant_functional_type) %>% 
+  mutate(gtopo30_elevation = ifelse(gtopo30_elevation=="(null)", NA, gtopo30_elevation)) %>% 
+  mutate(gtopo30_elevation = as.numeric(gtopo30_elevation)) %>% 
+  right_join(siteinfo, by = "sitename") %>% 
+  
+  ## complement only elevation
+  mutate(elv = ifelse(is.na(elv) & !is.na(gtopo30_elevation), gtopo30_elevation, elv))
+
+library(ggplot2)
+siteinfo %>% 
+  ggplot(aes(lon, lon_falge)) +
+  geom_point()
+
+siteinfo %>% 
+  ggplot(aes(lat, lat_falge)) +
+  geom_point()
+```
+
+
 ## Complement start year and end year
 
 The original FLUXNET 2015 meta info file name doesn't contain clean information on start and end years for which data is available. Complement this information using names of the FLUXNET 2015 data files. This is more reliable data than in the meta info file. To run this step, data needs to be downloaded. Here, I'm using the daily data files and specify the path where they are located.
@@ -133,6 +165,8 @@ siteinfo <- siteinfo[ which( !is.element( siteinfo$sitename, missing_data_for_si
 
 ## Get C3/C4 information from an additional file
 
+The information of C3/C4 vegetation provided in file "siteinfo_fluxnet_sofun_withC3C4info.csv" was created by B. Stocker based on information in the FLUXNET 2015 meta info.
+
 Based on information that is "manually" determined, the following sites contain a sustantial cover fraction of C4 vegetation:
 
 - AU-How
@@ -154,6 +188,8 @@ siteinfo <- siteinfo %>%
 
 
 ## Add water holding capacity information
+
+The soil water holding capacity (WHC) information provided in file siteinfo_fluxnet2015_sofun+whc.csv was created by David Sandoval Calle (Imperial College) based on Soilgrids data (see Stocker et al., 2018 Nature Geoscience).
 
 This information is collected separately by D. Sandoval as described in Stocker et al., (2020) *GMD* and provided in a separate file `siteinfo_fluxnet2015_sofun+whc.csv`.
 ```{r}
@@ -191,16 +227,20 @@ siteinfo <- raster::extract(rasta, sp::SpatialPoints(dplyr::select(siteinfo, lon
 ```
 
 
-
-
 ## Add Koeppen-Geiger class
 
+The `fluxnet_site_info_all.csv` was downloaded from https://daac.ornl.gov/cgi-bin/dsviewer.pl?ds_id=1530. 
+
+**Citation**:
+
+Falge, E., M. Aubinet, P.S. Bakwin, D. Baldocchi, P. Berbigier, C. Bernhofer, T.A. Black, R. Ceulemans, K.J. Davis, A.J. Dolman, A. Goldstein, M.L. Goulden, A. Granier, D.Y. Hollinger, P.G. Jarvis, N. Jensen, K. Pilegaard, G. Katul, P. Kyaw Tha Paw, B.E. Law, A. Lindroth, D. Loustau, Y. Mahli, R. Monson, P. Moncrieff, E. Moors, J.W. Munger, T. Meyers, W. Oechel, E.-D. Schulze, H. Thorgeirsson, J. Tenhunen, R. Valentini, S.B. Verma, T. Vesala, and S.C. Wofsy. 2017. FLUXNET Research Network Site Characteristics, Investigators, and Bibliography, 2016. ORNL DAAC, Oak Ridge, Tennessee, USA. https://doi.org/10.3334/ORNLDAAC/1530
+
 ```{r}
-## Get additional meta information for sites: Koeppen-Geiger Class
-## The file "siteinfo_climate_koeppengeiger_flunxet2015.csv" was downloaded from downloaded from https://daac.ornl.gov/cgi-bin/dsviewer.pl?ds_id=1530 (placed in my ~/data/FLUXNET-2015_Tier1/meta/)
-tmp <-  read_csv("./data/fluxnet_site_info_all.csv") %>%
+siteinfo_falge <- read_csv("./data/fluxnet_site_info_all.csv") %>%
   dplyr::select(-sitename) %>% 
-  dplyr::rename( sitename = fluxnetid ) %>% 
+  dplyr::rename( sitename = fluxnetid ) 
+
+tmp <- siteinfo_falge %>% 
   dplyr::select( sitename, koeppen_climate, gtopo30_elevation )
 
 meta <- tmp %>%
