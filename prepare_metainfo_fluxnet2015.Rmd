@@ -286,7 +286,7 @@ siteinfo <- siteinfo %>%
 
 ```{r}
 siteinfo <- siteinfo %>% 
-  dplyr::select(sitename, lon, lat, elv, year_start, year_end, classid, c4, whc, koeppen_code) %>% 
+  dplyr::select(sitename, lon, lat, elv, year_start, year_end, classid, c4, whc, koeppen_code, igbp_land_use, plant_functional_type) %>% 
   write_csv("./output/siteinfo_fluxnet2015.csv")
 ```
 
