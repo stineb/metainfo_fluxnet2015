@@ -12,6 +12,8 @@ This is implemented in RMarkdown file:
 
 - `output/siteinfo_fluxnet2015.csv`
 
+**The output file is part of this repository and can be downloaded directly.** 
+
 ## Citation 
 
 Please cite original meta data providers.
