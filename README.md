@@ -8,7 +8,7 @@ This is implemented in RMarkdown file:
 
 - `prepare_metainfo_fluxnet2015.Rmd`
 
-.. and creates a table with meta info for all sites CSV in 
+.. and creates a table with meta info for all sites (as CSV)
 
 - `output/siteinfo_fluxnet2015.csv`
 
