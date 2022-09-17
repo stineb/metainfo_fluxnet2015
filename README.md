@@ -6,7 +6,7 @@ This repository contains reproducible code for collecting meta data for FLUXNET 
 
 This is implemented in RMarkdown file:
 
-- `prepare_metainfo_fluxnet2015.Rmd`
+- `vignettes/prepare_metainfo_fluxnet2015.Rmd`
 
 .. and creates a table with meta info for all sites (as CSV)
 

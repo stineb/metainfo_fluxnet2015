@@ -316,7 +316,9 @@ siteinfo <- siteinfo %>%
   dplyr::select(sitename, lon, lat, elv, year_start, year_end, classid, c4, whc, koeppen_code, igbp_land_use, plant_functional_type) %>% 
   write_csv("../inst/extdata/siteinfo_fluxnet2015.csv")
 
-save(siteinfo, file = "../data/siteinfo_fluxnet2015.Rdata")
+siteinfo_fluxnet2015 <- siteinfo
+
+save(siteinfo_fluxnet2015, file = "~/metainfo_fluxnet2015/data/siteinfo_fluxnet2015.RData")
 ```
 
 
